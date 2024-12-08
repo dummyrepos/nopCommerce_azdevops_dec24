@@ -1,8 +1,7 @@
 trigger:
-- main  # Adjust to your branch name
+- master  # Adjust to your branch name
 
 pool: Default
-    # Use a Windows agent for .NET projects
 
 variables:
   buildConfiguration: 'Release'
