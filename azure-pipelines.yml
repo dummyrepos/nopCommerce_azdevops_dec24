@@ -41,10 +41,6 @@ steps:
   displayName: 'Run Tests with Coverage'
   continueOnError: true
 
-- script: |
-    dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.x
-    reportgenerator "-reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml" "-targetdir:$(Build.SourcesDirectory)/TestResults" -reporttypes:Html
-  displayName: 'Generate Coverage Report'
 
 - task: SonarCloudAnalyze@1
   displayName: 'Run SonarCloud Analysis'
