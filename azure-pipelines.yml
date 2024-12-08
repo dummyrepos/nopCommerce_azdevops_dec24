@@ -11,11 +11,6 @@ variables:
   SONAR_PROJECT: 'nop'
 
 steps:
-- task: UseDotNet@2
-  inputs:
-    packageType: 'sdk'
-    version: '9.0'  # Replace with the required .NET version
-  displayName: 'Install .NET SDK'
 
 - task: SonarCloudPrepare@1
   inputs:
