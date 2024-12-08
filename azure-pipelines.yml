@@ -28,7 +28,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
-    projects: '**/*.csproj'
+    projects: 'src/Presentation/Nop.Web/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
   displayName: 'Build Project'
 
