@@ -4,11 +4,7 @@ trigger:
 pool: Default
 
 variables:
-  buildConfiguration: 'Release'
-  SONAR_PROJECT_KEY: 'azdevopslt_nop'
-  SONAR_ORGANIZATION: 'azdevopslt'
-  SONAR_TOKEN: 'a039730541a096be584834c39656d83050a73269' # Add this as a secret variable in Azure DevOps
-  SONAR_PROJECT: 'nop'
+  - group: nop
 
 steps:
 
