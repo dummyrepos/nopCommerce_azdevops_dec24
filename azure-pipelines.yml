@@ -1,0 +1,61 @@
+trigger:
+- main  # Adjust to your branch name
+
+pool: Default
+    # Use a Windows agent for .NET projects
+
+variables:
+  buildConfiguration: 'Release'
+  SONAR_PROJECT_KEY: 'azdevopslt_nop'
+  SONAR_ORGANIZATION: 'azdevopslt'
+  SONAR_TOKEN: 'a039730541a096be584834c39656d83050a73269' # Add this as a secret variable in Azure DevOps
+  SONAR_PROJECT: 'nop'
+
+steps:
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '9.0'  # Replace with the required .NET version
+  displayName: 'Install .NET SDK'
+
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'SONAR_CLOUD_1' # Replace with your SonarCloud service connection name
+    organization: '$(SONAR_ORGANIZATION)'  # Replace with your SonarCloud organization name
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: '$(SONAR_PROJECT_KEY)'       # Replace with your SonarCloud project key
+    cliProjectName: '$(SONAR_PROJECT)'      # Replace with your SonarCloud project name
+    cliProjectVersion: '1.0'
+    extraProperties: |
+      sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/coverage.opencover.xml
+  displayName: 'Prepare analysis on SonarCloud'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '**/*.csproj'
+    arguments: '--configuration $(buildConfiguration)'
+  displayName: 'Build Project'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    projects: '**/*Tests/*.csproj'
+    arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code Coverage"'
+    publishTestResults: true
+  displayName: 'Run Tests with Coverage'
+  continueOnError: true
+
+- script: |
+    dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.x
+    reportgenerator "-reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml" "-targetdir:$(Build.SourcesDirectory)/TestResults" -reporttypes:Html
+  displayName: 'Generate Coverage Report'
+
+- task: SonarCloudAnalyze@1
+  displayName: 'Run SonarCloud Analysis'
+
+- task: SonarCloudPublish@1
+  inputs:
+    pollingTimeoutSec: '300'
+  displayName: 'Publish Quality Gate Result'
