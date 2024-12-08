@@ -12,7 +12,7 @@ variables:
 
 steps:
 
-- task: SonarCloudPrepare@1
+- task: SonarCloudPrepare@3
   inputs:
     SonarCloud: 'SONAR_CLOUD_1' # Replace with your SonarCloud service connection name
     organization: '$(SONAR_ORGANIZATION)'  # Replace with your SonarCloud organization name
@@ -42,10 +42,10 @@ steps:
   continueOnError: true
 
 
-- task: SonarCloudAnalyze@1
+- task: SonarCloudAnalyze@3
   displayName: 'Run SonarCloud Analysis'
 
-- task: SonarCloudPublish@1
+- task: SonarCloudPublish@3
   inputs:
     pollingTimeoutSec: '300'
   displayName: 'Publish Quality Gate Result'
